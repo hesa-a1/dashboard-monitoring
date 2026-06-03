@@ -161,10 +161,9 @@ async function loadTicker(){
         const data =
             await response.json();
 
-        const text =
-            data.join(
-                " ● "
-            );
+        const text = data.join(
+          '<span class="separator">●</span>'
+        );
 
         document
             .getElementById("runningText")
