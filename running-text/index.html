@@ -136,31 +136,55 @@ body{
     <!-- Running Text -->
     <div class="ticker">
 
-        <div class="ticker-content">
+        <div class="ticker-content" id="runningText">
 
-            Realisasi Belanja K/L mencapai 78,5%
-
-            <span class="separator">●</span>
-
-            Pendapatan Negara tumbuh 6,2% dibanding periode sebelumnya
-
-            <span class="separator">●</span>
-
-            Monitoring Kinerja Anggaran diperbarui secara berkala
-
-            <span class="separator">●</span>
-
-            Dashboard mendukung pengambilan keputusan berbasis data
-
-            <span class="separator">●</span>
-
-            Update terakhir: Juni 2026
+            Loading...
 
         </div>
 
     </div>
 
 </div>
+    
+<script>
 
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzkZ02smhSk3e_RJOnYjDh6cIU3_F89fdjACf9D8QVeLurx2cc-339tj81Z3YFZO6EM/exec";
+
+async function loadTicker(){
+
+    try{
+
+        const response =
+            await fetch(API_URL);
+
+        const data =
+            await response.json();
+
+        const text =
+            data.join(
+                " ● "
+            );
+
+        document
+            .getElementById("runningText")
+            .innerHTML = text;
+
+    }
+    catch(error){
+
+        document
+            .getElementById("runningText")
+            .innerHTML =
+            "Data tidak tersedia";
+
+    }
+
+}
+
+loadTicker();
+
+</script>
+    
 </body>
 </html>
