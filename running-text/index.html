@@ -147,61 +147,39 @@ body{
 </div>
     
 <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzkZ02smhSk3e_RJOnYjDh6cIU3_F89fdjACf9D8QVeLurx2cc-339tj81Z3YFZO6EM/exec";
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzkZ02smhSk3e_RJOnYjDh6cIU3_F89fdjACf9D8QVeLurx2cc-339tj81Z3YFZO6EM/exec";
+async function loadTicker() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        const text = data.join('<span class="separator">●</span>');
+        const ticker = document.getElementById("runningText");
+        ticker.innerHTML = text;
 
-async function loadTicker(){
+        // Tentukan kecepatan yang diinginkan (pixel per detik)
+        const speed = 80; 
 
-    try{
+        setTimeout(() => {
+            // ticker.scrollWidth sudah mencakup padding-left: 100% (lebar layar/container)
+            // beserta panjang teks itu sendiri.
+            // Karena animasi menggunakan translateX(-100%), elemen bergerak sejauh lebarnya sendiri.
+            const distance = ticker.scrollWidth; 
+            
+            // Rumus Waktu = Jarak / Kecepatan
+            const duration = distance / speed;
 
-        const response =
-            await fetch(API_URL);
+            // Terapkan durasi ke CSS animation
+            ticker.style.animationDuration = duration + "s";
+        }, 100);
 
-        const data =
-            await response.json();
-
-        const text = data.join(
-          '<span class="separator">●</span>'
-        );
-const ticker =
-    document.getElementById("runningText");
-
-ticker.innerHTML = text;
-
-const speed = 80;
-
-setTimeout(() => {
-
-    const textWidth =
-        ticker.scrollWidth;
-
-    const containerWidth =
-        document.querySelector(".ticker").offsetWidth;
-
-    const distance =
-        textWidth + containerWidth;
-
-    const duration =
-        distance / speed;
-
-    ticker.style.animationDuration =
-        duration + "s";
-
-}, 100);
-    catch(error){
-
-        document
-            .getElementById("runningText")
-            .innerHTML =
-            "Data tidak tersedia";
-
+    } catch (error) { // <-- PERBAIKAN: Kurung kurawal penutup 'try' ditambahkan di sini
+        document.getElementById("runningText").innerHTML = "Data tidak tersedia";
     }
-
 }
 
 loadTicker();
-
 </script>
     
 </body>
