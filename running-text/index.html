@@ -164,42 +164,31 @@ async function loadTicker(){
         const text = data.join(
           '<span class="separator">●</span>'
         );
+const ticker =
+    document.getElementById("runningText");
 
-        document
-            .getElementById("runningText")
-            .innerHTML = text;
-        /*
-        Kecepatan tetap
-        80 pixel per detik
-        */
-        const speed = 80;
+ticker.innerHTML = text;
 
-        /*
-        Lebar teks aktual
-        */
-        const textWidth = ticker.scrollWidth;
+const speed = 80;
 
-        /*
-        Lebar area ticker
-        */
-        const containerWidth =
-          document.querySelector(".ticker").offsetWidth;
+setTimeout(() => {
 
-        /*
-        Jarak total yang ditempuh
-        */
-        const distance =
-          textWidth + containerWidth;
+    const textWidth =
+        ticker.scrollWidth;
 
-        /*
-        Durasi animasi
-        */
-        const duration =
-          distance / speed;
+    const containerWidth =
+        document.querySelector(".ticker").offsetWidth;
 
-        ticker.style.animationDuration =
-          duration + "s";
-    }
+    const distance =
+        textWidth + containerWidth;
+
+    const duration =
+        distance / speed;
+
+    ticker.style.animationDuration =
+        duration + "s";
+
+}, 100);
     catch(error){
 
         document
