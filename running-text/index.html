@@ -90,7 +90,7 @@ body{
     font-size:15px;
     font-weight:500;
 
-    animation: ticker 40s linear infinite;
+    animation: ticker linear infinite;
 }
 
 @keyframes ticker{
@@ -168,7 +168,37 @@ async function loadTicker(){
         document
             .getElementById("runningText")
             .innerHTML = text;
+        /*
+        Kecepatan tetap
+        80 pixel per detik
+        */
+        const speed = 80;
 
+        /*
+        Lebar teks aktual
+        */
+        const textWidth = ticker.scrollWidth;
+
+        /*
+        Lebar area ticker
+        */
+        const containerWidth =
+          document.querySelector(".ticker").offsetWidth;
+
+        /*
+        Jarak total yang ditempuh
+        */
+        const distance =
+          textWidth + containerWidth;
+
+        /*
+        Durasi animasi
+        */
+        const duration =
+          distance / speed;
+
+        ticker.style.animationDuration =
+          duration + "s";
     }
     catch(error){
 
