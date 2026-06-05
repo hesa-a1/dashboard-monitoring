@@ -90,7 +90,7 @@ body{
     font-size:15px;
     font-weight:500;
 
-    animation: ticker linear infinite;
+    animation: ticker 10s linear infinite;
 }
 
 @keyframes ticker{
@@ -148,34 +148,54 @@ body{
     
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzkZ02smhSk3e_RJOnYjDh6cIU3_F89fdjACf9D8QVeLurx2cc-339tj81Z3YFZO6EM/exec";
+const ticker = document.getElementById("runningText");
+const speed = 50; // Atur kecepatan di sini (piksel per detik)
+
+// Fungsi untuk menghitung dan menerapkan durasi animasi
+function updateTickerSpeed() {
+    const distance = ticker.scrollWidth;
+    const duration = distance / speed;
+    ticker.style.animationDuration = duration + "s";
+}
+
+// 1. Langsung hitung kecepatan untuk teks "Loading..." saat halaman pertama dimuat
+updateTickerSpeed();
 
 async function loadTicker() {
     try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        
         const text = data.join('<span class="separator">●</span>');
-        const ticker = document.getElementById("runningText");
+        
+        // 2. Hentikan animasi sejenak. Ini penting agar saat data baru masuk, 
+        // teks tidak melompat, melainkan mulai masuk dengan rapi dari ujung kanan layar.
+        ticker.style.animation = 'none';
+        
+        // Memaksa browser mereset animasi (Force Reflow)
+        ticker.offsetHeight; 
+
+        // 3. Masukkan teks baru dari spreadsheet
         ticker.innerHTML = text;
 
-        // Tentukan kecepatan yang diinginkan (pixel per detik)
-        const speed = 80; 
+        // 4. Nyalakan lagi animasinya
+        ticker.style.animation = 'ticker linear infinite';
 
+        // 5. Hitung ulang kecepatan sesuai panjang teks baru yang lebih panjang
+        // (Diberi jeda 50ms agar browser selesai merender teks baru sebelum diukur)
         setTimeout(() => {
-            // ticker.scrollWidth sudah mencakup padding-left: 100% (lebar layar/container)
-            // beserta panjang teks itu sendiri.
-            // Karena animasi menggunakan translateX(-100%), elemen bergerak sejauh lebarnya sendiri.
-            const distance = ticker.scrollWidth; 
-            
-            // Rumus Waktu = Jarak / Kecepatan
-            const duration = distance / speed;
+            updateTickerSpeed();
+        }, 50);
 
-            // Terapkan durasi ke CSS animation
-            ticker.style.animationDuration = duration + "s";
-        }, 100);
-
-    } catch (error) { // <-- PERBAIKAN: Kurung kurawal penutup 'try' ditambahkan di sini
-        document.getElementById("runningText").innerHTML = "Data tidak tersedia";
+    } catch (error) {
+        // Lakukan hal yang sama jika terjadi error / internet mati
+        ticker.style.animation = 'none';
+        ticker.offsetHeight;
+        ticker.innerHTML = "Gagal memuat data / Data tidak tersedia";
+        ticker.style.animation = 'ticker linear infinite';
+        
+        setTimeout(() => {
+            updateTickerSpeed();
+        }, 50);
     }
 }
 
